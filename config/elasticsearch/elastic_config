@@ -1,0 +1,5 @@
+{
+    "hosts": [
+        "http://elastic:changeme@localhost:9200/"
+        ]
+}
