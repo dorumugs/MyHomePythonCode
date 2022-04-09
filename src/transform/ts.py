@@ -378,29 +378,17 @@ class Transform(object):
         })
 
         price_t['날짜'] = price_t.날짜.apply(
-            lambda x: x.replace('.', '') if len(str(x).replace('.', '').split(' ')) == 2 and int(
-                str(x).replace('.', '').split(' ')[0]) > 1984 else np.nan)
+            lambda x: x if len(str(x).split('.')) == 2 and int(
+                str(x).split('.')[0]) > 1984 else np.nan)
         price_t = price_t.dropna().reset_index(drop=True)
-
+        price_t = price_t[['날짜', '총지수']]
         price_t = price_t.astype({
-            '총지수': 'float',
-            '식료품-비주류음료': 'float',
-            '주류-담배': 'float',
-            '의류-신발': 'float',
-            '주택-수도-전기-연료': 'float',
-            '가정용품-가사-서비스': 'float',
-            '보건': 'float',
-            '교통': 'float',
-            '통신': 'float',
-            '오락-문화': 'float',
-            '교육': 'float',
-            '음식-숙박': 'float',
-            '기타': 'float'
+            '총지수': 'float'
         })
 
-        price_t['분기'] = price_t.날짜.apply(lambda x: (int(str(x).split(' ')[1]) - 1) // 3 + 1)
-        price_t['년'] = price_t.날짜.apply(lambda x: str(x).split(' ')[0])
-        price_t['월'] = price_t.날짜.apply(lambda x: str(x).split(' ')[1])
+        price_t['분기'] = price_t.날짜.apply(lambda x: (int(str(x).split('.')[1]) - 1) // 3 + 1)
+        price_t['년'] = price_t.날짜.apply(lambda x: str(x).split('.')[0])
+        price_t['월'] = price_t.날짜.apply(lambda x: str(x).split('.')[1])
 
         left = pd.DataFrame(price_t.groupby(['년', '분기'])['총지수'].mean()).reset_index()
         right = pd.DataFrame(price_t.groupby(['년'])['총지수'].mean()).reset_index()
